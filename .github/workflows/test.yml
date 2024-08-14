@@ -8,10 +8,10 @@ on:
 
 jobs:
   approved:
-    #if: github.event.review.state == 'approved'->
+    if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "This PR was " + ${{github.event.review.state}}
+      - run: echo "This PR was" ${{github.event.review.state}}
 
   build:
     name: Build
@@ -33,8 +33,8 @@ jobs:
     - name: Compile
       run: npm run build
 
-  deploy:
-    name: Deploy
+  change:
+    name: Change
     needs: build
     runs-on: ubuntu-latest
     steps:     
@@ -56,3 +56,12 @@ jobs:
         deployment-gate: '{"environment":"Dev","jobName":"Deploy"}'
     - name: Output of Change Creation
       run: echo "change-request-number = ${{ steps.create.outputs.change-request-number }}" >> $GITHUB_OUTPUT
+
+  deploy:
+    name: Deploy
+    needs: change
+    runs-on: ubuntu-latest
+    environment: Dev
+    steps:
+    - name: Deployment steps
+      run: echo "Deployment completed"
