@@ -11,8 +11,8 @@ jobs:
     if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "This PR was" ${{github.event.review.state}}
-
+      - run: echo "This PR was ${{github.event.review.state}}"
+			
   registerpackage:
     name: Register Package
     needs: approved
@@ -26,8 +26,8 @@ jobs:
           tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
           context-github: ${{ toJSON(github) }}
           job-name: 'Register Package'
-          artifacts: '[{"name": "com: custom action demo","version": "1.${{GitHub.run_number }}","semantic version": "1.${{GitHub.run_number }}.0","repository name": "${{GitHub.repository }}"}]'
-          package-name: 'registerpackage.war'
+          artifacts: '[{"name": "${{github.event.registry_package.package_version.name}}","version": "$(git describe --exact-match --abbrev=0)","semantic version": "$(git describe --exact-match --abbrev=0)","repository name": "${{github.repository }}"}]'
+          package-name: '${{github.event.registry_package.package_version.name}}.war'
 
   change:
     name: Change
