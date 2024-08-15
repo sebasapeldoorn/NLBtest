@@ -29,8 +29,8 @@ jobs:
           artifacts: '[{"name": "${{github.event.registry_package.package_version.name}}","version": "$(git describe --exact-match --abbrev=0)","semantic version": "$(git describe --exact-match --abbrev=0)","repository name": "${{github.repository }}"}]'
           package-name: '${{github.event.registry_package.package_version.name}}.war'
 
-  checkversion:
-   - run: echo "Package with name ${{github.event.registry_package.package_version.name}}.war"
+  #checkversion:
+   #- run: echo "Package with name ${{github.event.registry_package.package_version.name}}.war"
    #- run: echo "and version $(git describe --exact-match --abbrev=0) was registered."
    
   change:
