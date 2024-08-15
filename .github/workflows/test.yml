@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "This PR was ${{github.event.review.state}}"
-			
+      
   registerpackage:
     name: Register Package
     needs: approved
@@ -28,6 +28,7 @@ jobs:
           job-name: 'Register Package'
           artifacts: '[{"name": "${{github.event.registry_package.package_version.name}}","version": "$(git describe --exact-match --abbrev=0)","semantic version": "$(git describe --exact-match --abbrev=0)","repository name": "${{github.repository }}"}]'
           package-name: '${{github.event.registry_package.package_version.name}}.war'
+	  run: echo "Package with name ${{github.event.registry_package.package_version.name}}.war and version $(git describe --exact-match --abbrev=0) was registered."
 
   change:
     name: Change
