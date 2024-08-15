@@ -30,7 +30,8 @@ jobs:
           package-name: '${{github.event.registry_package.package_version.name}}.war'
 
 checkversion:
-   - run: echo "Package with name ${{github.event.registry_package.package_version.name}}.war and version $(git describe --exact-match --abbrev=0) was registered."
+   - run: echo "Package with name ${{github.event.registry_package.package_version.name}}.war"
+   - run: echo "and version $(git describe --exact-match --abbrev=0) was registered."
 
   change:
     name: Change
