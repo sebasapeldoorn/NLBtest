@@ -9,9 +9,9 @@ on:
 jobs:
   approved:
   #  if: github.event.review.state == 'approved'
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - run: echo "This PR was ${{github.event.review.state}}"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This PR was ${{github.event.review.state}}"
       
   registerpackage:
     name: Register Package
