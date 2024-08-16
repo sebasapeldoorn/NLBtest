@@ -52,7 +52,8 @@ jobs:
   
   change:
     name: Change
-    needs: registerpackage
+  #  needs: registerpackage
+    needs: approved
     runs-on: ubuntu-latest
     steps:     
     - name: ServiceNow Change
