@@ -26,8 +26,8 @@ jobs:
           tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
           context-github: ${{ toJSON(github) }}
           job-name: 'Register Package'
-          artifacts: '[{"name": "${{github.event.registry_package.package_version.name}}","version": "$(git describe --exact-match --abbrev=0)","semantic version": "$(git describe --exact-match --abbrev=0)","repository name": "${{github.repository }}"}]'
-          package-name: '${{github.event.registry_package.package_version.name}}.war'
+          artifacts: '[{"name": "MyFirstPackage","version": "$(git describe --exact-match --abbrev=0)","semantic version": "$(git describe --exact-match --abbrev=0)","repository name": "${{github.repository }}"}]'
+          package-name: 'MyFirstPackage.war'
   
   change:
     name: Change
