@@ -71,7 +71,7 @@ jobs:
         changeCreationTimeOut: '3600'
         abortOnChangeCreationFailure: true
         abortOnChangeStepTimeout: true
-        deployment-gate: '{"environment":"Dev","jobName":"Deploy"}'
+        deployment-gate: '{"environment":"dev","jobName":"Deploy"}'
     - name: Output of Change Creation
       run: echo "change-request-number = ${{ steps.create.outputs.change-request-number }}" >> $GITHUB_OUTPUT
 
@@ -79,7 +79,7 @@ jobs:
     name: Deploy
     needs: change
     runs-on: ubuntu-latest
-    environment: Dev
+    environment: dev
     steps:
     - name: Deployment steps
       run: echo "Deployment completed"
