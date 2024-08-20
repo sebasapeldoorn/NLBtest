@@ -8,48 +8,70 @@ on:
 
 jobs:
   approved:
+    name: Approved
   #  if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     steps:
       - run: echo "This PR was ${{github.event.review.state}}"
-      
-  registerpackage:
-    name: Register Package
-    needs: approved
-    runs-on: ubuntu-latest
-    steps:
-      - name: ServiceNow Register Package
-        uses: ServiceNow/servicenow-devops-register-package@v3.1.0
-        with:
-          devops-integration-token: ${{ secrets.SN_DEVOPS_INTEGRATION_TOKEN }}
-          instance-url: ${{ secrets.SN_INSTANCE_URL }}
-          tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
-          context-github: ${{ toJSON(github) }}
-          job-name: 'Register Package'
-          artifacts: '[{"name": "${{github.event.registry_package.package_version.name}}","version": "$(git describe --exact-match --abbrev=0)","semantic version": "$(git describe --exact-match --abbrev=0)","repository name": "${{github.repository }}"}]'
-          package-name: '${{github.event.registry_package.package_version.name}}.war'
+
+  #registerartifact:
+  #    needs: approved
+  #    runs-on: ubuntu-latest
+  #    name: ServiceNow Register Artifact
+  #
+  #    steps:
+  #      - name: Checkout
+  #        uses: actions/checkout@v3
+  #
+  #      - name: ServiceNow Register Artifact
+  #        uses: ServiceNow/servicenow-devops-register-artifact@v3.1.0
+  #        id: update
+  #        with:
+  #          devops-integration-token: ${{ secrets.SN_DEVOPS_INTEGRATION_TOKEN }}
+  #          instance-url: ${{ secrets.SN_INSTANCE_URL }}
+  #          tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
+  #          context-github: ${{ toJSON(github) }}
+  #          job-name: 'ServiceNow Register Artifact'
+  #          artifacts: '[{"name": "MyFirstPackage","version": "1.${{ github.run_number }}","semanticVersion": "1.${{ github.run_number }}.0","repositoryName": "${{ github.repository }}"}]'
+        
+  #registerpackage:
+  #  name: Register Package
+  #  needs: registerartifact
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - name: ServiceNow Register Package
+  #      uses: ServiceNow/servicenow-devops-register-package@v3.1.0
+  #      with:
+  #        devops-integration-token: ${{ secrets.SN_DEVOPS_INTEGRATION_TOKEN }}
+  #        instance-url: ${{ secrets.SN_INSTANCE_URL }}
+  #        tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
+  #        context-github: ${{ toJSON(github) }}
+  #        job-name: 'Register Artifact'
+  #        artifacts: '[{"name": "MyFirstPackage","version": "1.${{ github.run_number }}","semanticVersion": "1.${{ github.run_number }}.0","repositoryName": "${{ github.repository }}"}]'
+  #        package-name: 'MyFirstPackage.war'
   
   change:
     name: Change
-    needs: registerpackage
+  #  needs: registerpackage
+    needs: approved
     runs-on: ubuntu-latest
     steps:     
     - name: ServiceNow Change
-      uses: ServiceNow/servicenow-devops-change@v4.1.0
+      uses: ServiceNow/servicenow-devops-change@v4.0.0
       id: create
       with:
         devops-integration-token: ${{ secrets.SN_DEVOPS_INTEGRATION_TOKEN }}
         instance-url: ${{ secrets.SN_INSTANCE_URL }}
         tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
         context-github: ${{ toJSON(github) }}
-        job-name: 'Deploy'
-        change-request: '{"setCloseCode":"true","autoCloseChange":false,"attributes":{"short_description":"Automated Software Deployment","description":"Automated Software Deployment.","assignment_group":"a715cd759f2002002920bde8132e7018","implementation_plan":"Software update is tested and results can be found in Test Summaries Tab; When the change is approved the implementation happens automated by the CICD pipeline within the change planned start and end time window.","backout_plan":"When software fails in production, the previous software release will be re-deployed.","test_plan":"Testing if the software was successfully deployed"}}'
+        job-name: 'Change'
+        change-request: '{"setCloseCode":"true","autoCloseChange":true,"attributes":{"short_description":"Automated Software Deployment","description":"Automated Software Deployment.","assignment_group":"a715cd759f2002002920bde8132e7018","implementation_plan":"Software update is tested and results can be found in Test Summaries Tab; When the change is approved the implementation happens automated by the CICD pipeline within the change planned start and end time window.","backout_plan":"When software fails in production, the previous software release will be re-deployed.","test_plan":"Testing if the software was successfully deployed"}}'
         interval: '100'
         timeout: '3600'
         changeCreationTimeOut: '3600'
         abortOnChangeCreationFailure: true
         abortOnChangeStepTimeout: true
-        deployment-gate: '{"environment":"Dev","jobName":"Deploy"}'
+        deployment-gate: '{"environment":"dev","jobName":"Deploy"}'
     - name: Output of Change Creation
       run: echo "change-request-number = ${{ steps.create.outputs.change-request-number }}" >> $GITHUB_OUTPUT
 
@@ -57,7 +79,7 @@ jobs:
     name: Deploy
     needs: change
     runs-on: ubuntu-latest
-    environment: Dev
+    environment: dev
     steps:
     - name: Deployment steps
       run: echo "Deployment completed"
