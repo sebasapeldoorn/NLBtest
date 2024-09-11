@@ -51,18 +51,12 @@ jobs:
         id: extract_branch
       - run: echo "${{steps.extract_branch.outputs.branch}}"
 
-      - name: Set Configuration Items
+      - name: Set Configuration Items DEV
         id: set-ci
-        uses: actions/github-script@v7.0.1
-        with:
-          script: |
-            const ci = "zzz"
-            if("${{steps.extract_branch.outputs.branch}}" == "development"){
-              ci = "abc123"
-            }else{
-              ci = "def456"
-            }
-            core.setOutput('ci', ci)
+        if: ${{(steps.extract_branch.outputs.branch == 'development')}}
+        run: |
+          ci="abc123"
+          echo "ci=$ci" >> $GITHUB_OUTPUT
       - run: echo "${{steps.set-ci.outputs.ci}}"
         
   #registerartifact:
