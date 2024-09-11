@@ -17,17 +17,28 @@ jobs:
   test-yaml-reader:
     runs-on: ubuntu-latest
     name: Test read-yaml
+    #steps:
+    #  - uses: actions/checkout@v1
+
+    #  - name: Run read-yaml action
+    #    id: yaml-data
+    #    uses: gertd/yaml-reader-action@v1
+    #    with:
+    #      file: './repotest.yml'
+
+    #  - name: Display read-yaml output
+    #    run: echo "${{ steps.yaml-data.outputs.data }}"
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-      - name: Run read-yaml action
-        id: yaml-data
-        uses: gertd/yaml-reader-action@v1
+      - name: Read YAML
+        uses: nichmor/minimal-read-yaml@v0.0.2
         with:
-          file: './repotest.yml'
+          config: './repotest.yml'
 
-      - name: Display read-yaml output
-        run: echo "${{ steps.yaml-data.outputs.data }}"
+      - name: Access Output
+        run: echo ${{ steps.read-yaml.outputs['environment.name'] }}
      
   #registerartifact:
   #    needs: approved
