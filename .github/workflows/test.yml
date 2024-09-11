@@ -27,7 +27,7 @@ jobs:
         id: yaml-reader
         with:
           config: './repotest.yml'
-      - run: echo ${{steps.yaml-reader.outputs['environment.version']}} >> $GITHUB_OUTPUT
+      - run: echo ${{steps.yaml-reader.outputs['environment.version']}}
       
   get-version:
     runs-on: ubuntu-latest
@@ -38,8 +38,8 @@ jobs:
         run: |
           version=$(echo ${{ steps.yaml-reader.outputs['environment.version']}} | cut -d ":" -f2)
           semantic=$(echo ${{steps.version.outputs.version}} | cut -d "v" -f2)
-      - run: echo "${{steps.version.outputs.version}}" >> $GITHUB_OUTPUT
-      - run: echo "${{steps.version.outputs.semantic}}" >> $GITHUB_OUTPUT
+      - run: echo "${{steps.version.outputs.version}}"
+      - run: echo "${{steps.version.outputs.semantic}}"
      
   #registerartifact:
   #    needs: approved
@@ -80,7 +80,7 @@ jobs:
   change:
     name: Change
   #  needs: registerpackage
-    needs: approved
+    needs: get-version
     runs-on: ubuntu-latest
     steps:     
     - name: ServiceNow Change
