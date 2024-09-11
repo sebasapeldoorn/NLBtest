@@ -1,3 +1,2 @@
 Test:
-- name: John Doe
-  version: 'repotest:v1.0.1'
+- name: 'repotest:v1.0.1'
