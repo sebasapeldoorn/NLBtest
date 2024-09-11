@@ -38,10 +38,12 @@ jobs:
       
       - name: Semantic
         id: semantic
-        run: |
-          semantic=$(echo ${{steps.version.outputs.version}} | cut -d "v" -f2)
-          echo "semantic=$semantic" >> $GITHUB_OUTPUT
-      - run: echo "${{steps.version.outputs.semantic}}"
+        uses: actions/github-script@0.9.0
+        with:
+          script: |
+            const sv = ${{steps.version.outputs.version}}.split('v')[1]
+            core.setOutput('sv', sv)
+      - run: echo "${{steps.semantic.outputs.sv}}"
      
   #registerartifact:
   #    needs: approved
