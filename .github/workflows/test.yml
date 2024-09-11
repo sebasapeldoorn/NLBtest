@@ -16,7 +16,7 @@ jobs:
 
   test-yaml-reader:
     runs-on: ubuntu-latest
-    name: read-yaml
+    name: Read YAML
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -27,7 +27,7 @@ jobs:
           config: './repotest.yml'
 
       - name: Access Output
-        run: echo ${{ steps.read-yaml.outputs['Test.version'] }}
+        run: echo ${{ steps.read-yaml.outputs['Test.0.name'] }}
      
   #registerartifact:
   #    needs: approved
