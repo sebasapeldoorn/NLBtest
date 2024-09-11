@@ -23,11 +23,12 @@ jobs:
 
       - name: Read YAML
         uses: nichmor/minimal-read-yaml@v0.0.2
+        id: test-yaml-reader
         with:
           config: './repotest.yml'
 
       - name: Access Output
-        run: echo ${{ steps.read-yaml.outputs['environment.version'] }}
+        run: echo ${{ steps.test-yaml-reader.outputs['environment.version'] }}
      
   #registerartifact:
   #    needs: approved
