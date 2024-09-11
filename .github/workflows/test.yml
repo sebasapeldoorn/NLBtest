@@ -36,8 +36,10 @@ jobs:
     steps:
       - id: version
         run: |
-          version=$(echo ${{ steps.yaml-reader.outputs['environment.version']}} | cut -d ":" -f2)
+          version=$(echo ${{steps.yaml-reader.outputs['environment.version']}} | cut -d ":" -f2)
+          echo "version=$version" >> $GITHUB_OUTPUT
           semantic=$(echo ${{steps.version.outputs.version}} | cut -d "v" -f2)
+          echo "semantic=$semantic" >> $GITHUB_OUTPUT
       - run: echo "${{steps.version.outputs.version}}"
       - run: echo "${{steps.version.outputs.semantic}}"
      
