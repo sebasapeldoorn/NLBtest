@@ -24,7 +24,7 @@ jobs:
         id: yaml-data
         uses: gertd/yaml-reader-action@v1
         with:
-          file: './repotest.yml'
+          file: 'repotest.yml'
 
       - name: Display read-yaml output
         run: echo "${{ steps.yaml-data.outputs.data }}"     
