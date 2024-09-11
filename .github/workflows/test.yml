@@ -24,7 +24,7 @@ jobs:
           id: yaml-data
           uses: jbutcher5/read-yaml@main
           with:
-            file: '../../testrepo.yml'
+            file: 'repotest.yml'
             key-path: '["runs", "using"]'
   
         - name: Display read-yaml output
