@@ -16,18 +16,7 @@ jobs:
 
   test-yaml-reader:
     runs-on: ubuntu-latest
-    name: Test read-yaml
-    #steps:
-    #  - uses: actions/checkout@v1
-
-    #  - name: Run read-yaml action
-    #    id: yaml-data
-    #    uses: gertd/yaml-reader-action@v1
-    #    with:
-    #      file: './repotest.yml'
-
-    #  - name: Display read-yaml output
-    #    run: echo "${{ steps.yaml-data.outputs.data }}"
+    name: read-yaml
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
