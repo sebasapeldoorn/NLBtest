@@ -1,0 +1,3 @@
+name: example
+environment:
+  version: 'repotest:v1.0.1'

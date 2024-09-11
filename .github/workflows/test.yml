@@ -14,6 +14,51 @@ jobs:
     steps:
       - run: echo "This PR was ${{github.event.review.state}}"
 
+  yaml-reader:
+    runs-on: ubuntu-latest
+    name: Read YAML
+    needs: approved
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Read YAML
+        uses: nichmor/minimal-read-yaml@v0.0.2
+        id: yaml-reader
+        with:
+          config: './repotest.yml'
+      - run: echo ${{steps.yaml-reader.outputs['environment.version']}}
+      
+      - name: Version
+        id: version
+        run: |
+          version=$(echo ${{steps.yaml-reader.outputs['environment.version']}} | cut -d ":" -f2)
+          echo "version=$version" >> $GITHUB_OUTPUT
+      - run: echo "${{steps.version.outputs.version}}"
+      
+      - name: Semantic
+        id: semantic
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            const sv = "${{steps.version.outputs.version}}".split('v')[1]
+            core.setOutput('sv', sv)
+      - run: echo "${{steps.semantic.outputs.sv}}"
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      - run: echo "${{steps.extract_branch.outputs.branch}}"
+
+      - name: Set Configuration Items DEV
+        id: set-ci
+        if: ${{(steps.extract_branch.outputs.branch == 'development')}}
+        run: |
+          ci="abc123"
+          echo "ci=$ci" >> $GITHUB_OUTPUT
+      - run: echo "${{steps.set-ci.outputs.ci}}"
+        
   #registerartifact:
   #    needs: approved
   #    runs-on: ubuntu-latest
@@ -50,36 +95,35 @@ jobs:
   #        artifacts: '[{"name": "MyFirstPackage","version": "1.${{ github.run_number }}","semanticVersion": "1.${{ github.run_number }}.0","repositoryName": "${{ github.repository }}"}]'
   #        package-name: 'MyFirstPackage.war'
   
-  change:
-    name: Change
+  #change:
+  #  name: Change
   #  needs: registerpackage
-    needs: approved
-    runs-on: ubuntu-latest
-    steps:     
-    - name: ServiceNow Change
-      uses: ServiceNow/servicenow-devops-change@v4.1.0
-      id: create
-      with:
-        devops-integration-token: ${{ secrets.SN_DEVOPS_INTEGRATION_TOKEN }}
-        instance-url: ${{ secrets.SN_INSTANCE_URL }}
-        tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
-        context-github: ${{ toJSON(github) }}
-        job-name: 'Change'
-        change-request: '{"setCloseCode":"true","autoCloseChange":true,"attributes":{"short_description":"Automated Software Deployment","description":"Automated Software Deployment.","assignment_group":"a715cd759f2002002920bde8132e7018","implementation_plan":"Software update is tested and results can be found in Test Summaries Tab; When the change is approved the implementation happens automated by the CICD pipeline within the change planned start and end time window.","backout_plan":"When software fails in production, the previous software release will be re-deployed.","test_plan":"Testing if the software was successfully deployed"}}'
-        interval: '100'
-        timeout: '3600'
-        changeCreationTimeOut: '3600'
-        abortOnChangeCreationFailure: true
-        abortOnChangeStepTimeout: true
-        deployment-gate: '{"environment":"dev","jobName":"Deploy"}'
-    - name: Output of Change Creation
-      run: echo "change-request-number = ${{ steps.create.outputs.change-request-number }}" >> $GITHUB_OUTPUT
+  #  runs-on: ubuntu-latest
+  #  steps:     
+  #  - name: ServiceNow Change
+  #    uses: ServiceNow/servicenow-devops-change@v4.1.0
+  #    id: create
+  #    with:
+  #      devops-integration-token: ${{ secrets.SN_DEVOPS_INTEGRATION_TOKEN }}
+  #      instance-url: ${{ secrets.SN_INSTANCE_URL }}
+  #      tool-id: ${{ secrets.SN_ORCHESTRATION_TOOL_ID }}
+  #      context-github: ${{ toJSON(github) }}
+  #      job-name: 'Change'
+  #      change-request: '{"setCloseCode":"true","autoCloseChange":true,"attributes":{"short_description":"Automated Software Deployment","description":"Automated Software Deployment.","assignment_group":"a715cd759f2002002920bde8132e7018","implementation_plan":"Software update is tested and results can be found in Test Summaries Tab; When the change is approved the implementation happens automated by the CICD pipeline within the change planned start and end time window.","backout_plan":"When software fails in production, the previous software release will be re-deployed.","test_plan":"Testing if the software was successfully deployed"}}'
+  #      interval: '100'
+  #      timeout: '3600'
+  #      changeCreationTimeOut: '3600'
+  #      abortOnChangeCreationFailure: true
+  #      abortOnChangeStepTimeout: true
+  #      deployment-gate: '{"environment":"dev","jobName":"Deploy"}'
+  #  - name: Output of Change Creation
+  #    run: echo "change-request-number = ${{ steps.create.outputs.change-request-number }}" >> $GITHUB_OUTPUT
 
-  deploy:
-    name: Deploy
-    needs: change
-    runs-on: ubuntu-latest
-    environment: dev
-    steps:
-    - name: Deployment steps
-      run: echo "Deployment completed"
+  #deploy:
+  #  name: Deploy
+  #  needs: change
+  #  runs-on: ubuntu-latest
+  #  environment: dev
+  #  steps:
+  #  - name: Deployment steps
+  #    run: echo "Deployment completed"
