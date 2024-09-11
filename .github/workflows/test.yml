@@ -22,14 +22,13 @@ jobs:
   
         - name: Run read-yaml action
           id: yaml-data
-          uses: jbutcher5/read-yaml@main
+         uses: gertd/yaml-reader-action@v1
           with:
             file: 'repotest.yml'
-            key-path: '["runs", "using"]'
   
         - name: Display read-yaml output
-          run: echo "${{ steps.yaml-data.outputs.data }}"
-        
+          run: echo "${{ steps.yaml-data.outputs.data }}"     
+     
   #registerartifact:
   #    needs: approved
   #    runs-on: ubuntu-latest
