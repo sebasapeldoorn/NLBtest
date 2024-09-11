@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "This PR was ${{github.event.review.state}}"
+      - run: echo "Repo is ${{ github.event.repository.name }}"
 
   yaml-reader:
     runs-on: ubuntu-latest
