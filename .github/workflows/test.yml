@@ -50,6 +50,19 @@ jobs:
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
       - run: echo "${{steps.extract_branch.outputs.branch}}"
+
+      - name: Set Configuration Items
+        id: set-ci
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            if("${{steps.extract_branch.outputs.branch}}" == "development"){
+              const ci = 'abc123'
+            }else{
+              const ci = 'def456'
+            }
+            core.setOutput('ci', ci)
+      - run: echo "${{steps.set-ci.outputs.ci}}"
         
   #registerartifact:
   #    needs: approved
