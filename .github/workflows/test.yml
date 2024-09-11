@@ -39,7 +39,7 @@ jobs:
       - name: Semantic
         id: semantic
         run: |
-          semantic=$(echo ${{steps.version.outputs.version}} | cut -d "v" -f2)
+          semantic=$(echo ${{steps.yaml-reader.outputs['environment.version']}} | cut -d "v" -f2)
           echo "semantic=$semantic" >> $GITHUB_OUTPUT
       - run: echo "${{steps.version.outputs.semantic}}"
      
