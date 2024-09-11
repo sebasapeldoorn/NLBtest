@@ -56,10 +56,11 @@ jobs:
         uses: actions/github-script@v7.0.1
         with:
           script: |
+            const ci = "zzz"
             if("${{steps.extract_branch.outputs.branch}}" == "development"){
-              const ci = 'abc123'
+              ci = "abc123"
             }else{
-              const ci = 'def456'
+              ci = "def456"
             }
             core.setOutput('ci', ci)
       - run: echo "${{steps.set-ci.outputs.ci}}"
