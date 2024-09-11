@@ -53,9 +53,10 @@ jobs:
     runs-on: ubuntu-latest
     name: Determine configuration item
     steps:
-      - shell: bash
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
+      - id: extract_branch
+        shell: bash
+      - run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        
      
   #registerartifact:
   #    needs: approved
