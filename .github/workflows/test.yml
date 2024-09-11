@@ -49,6 +49,7 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
+      - run: echo "${{steps.extract_branch.outputs.branch}}"
         
   #registerartifact:
   #    needs: approved
