@@ -38,7 +38,7 @@ jobs:
           config: './repotest.yml'
 
       - name: Access Output
-        run: echo ${{ steps.read-yaml.outputs['environment.name'] }}
+        run: echo ${{ steps.read-yaml.outputs['test.version'] }}
      
   #registerartifact:
   #    needs: approved
