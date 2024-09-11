@@ -49,14 +49,10 @@ jobs:
             core.setOutput('sv', sv)
       - run: echo "${{steps.semantic.outputs.sv}}"
 
-  config-item:
-    runs-on: ubuntu-latest
-    name: Determine configuration item
-    steps:
       - name: Extract branch name
         shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
-      - run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         
   #registerartifact:
   #    needs: approved
