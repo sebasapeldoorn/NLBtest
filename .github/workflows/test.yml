@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "This PR was ${{github.event.review.state}}"
-      - run: echo "Repo is ${{ github.event.repository.name }}"
 
   yaml-reader:
     runs-on: ubuntu-latest
@@ -32,9 +31,13 @@ jobs:
       
       - name: Version
         id: version
-        run: |
-          version=$(echo ${{steps.yaml-reader.outputs['environment.version']}} | cut -d ":" -f2)
-          echo "version=$version" >> $GITHUB_OUTPUT
+        #run: |
+          #version=$(echo ${{steps.yaml-reader.outputs['environment.version']}} | cut -d ":" -f2)
+          #echo "version=$version" >> $GITHUB_OUTPUT
+        with:
+          script: |
+            const version = "${{steps.version.outputs.version}}".split(':')[1]
+            core.setOutput('version', version)
       - run: echo "${{steps.version.outputs.version}}"
       
       - name: Semantic
@@ -45,6 +48,14 @@ jobs:
             const sv = "${{steps.version.outputs.version}}".split('v')[1]
             core.setOutput('sv', sv)
       - run: echo "${{steps.semantic.outputs.sv}}"
+
+  config-item:
+    runs-on: ubuntu-latest
+    name: Determine configuration item
+    steps:
+      - shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
      
   #registerartifact:
   #    needs: approved
