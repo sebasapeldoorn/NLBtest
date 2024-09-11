@@ -41,7 +41,7 @@ jobs:
         uses: actions/github-script@v7.0.1
         with:
           script: |
-            const sv = ${{steps.version.outputs.version}}.split('v')[1]
+            const sv = "${{steps.version.outputs.version}}".split('v')[1]
             core.setOutput('sv', sv)
       - run: echo "${{steps.semantic.outputs.sv}}"
      
