@@ -1,1 +1,3 @@
-repotest:v1.0.1
+Test:
+- name: John Doe
+  version: 'repotest:v1.0.1'
