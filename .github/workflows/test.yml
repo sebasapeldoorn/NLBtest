@@ -14,27 +14,32 @@ jobs:
     steps:
       - run: echo "This PR was ${{github.event.review.state}}"
 
-  test-yaml-reader:
+  yaml-reader:
     runs-on: ubuntu-latest
     name: Read YAML
+    needs: approved
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
       - name: Read YAML
         uses: nichmor/minimal-read-yaml@v0.0.2
-        id: test-yaml-reader
+        id: yaml-reader
         with:
           config: './repotest.yml'
-
-      - name: Get version
-        id: get-id
+      - run: echo ${{steps.yaml-reader.outputs['environment.version']}} >> $GITHUB_OUTPUT
+      
+  get-version:
+    runs-on: ubuntu-latest
+    name: Get version
+    needs: yaml-reader
+    steps:
+      - id: version
         run: |
-          version=$(echo ${{ steps.test-yaml-reader.outputs['environment.version'] }} | cut -d ":" -f2)
-          semantic=$(echo ${{steps.get-id.outputs.version}} | cut -d "v" -f2)
-      - run: echo ${{ steps.test-yaml-reader.outputs['environment.version'] }}
-      - run: echo "${{steps.get-id.outputs.version}}"
-      - run: echo "${{steps.get-id.outputs.semantic}}"
+          version=$(echo ${{ steps.yaml-reader.outputs['environment.version']}} | cut -d ":" -f2)
+          semantic=$(echo ${{steps.version.outputs.version}} | cut -d "v" -f2)
+      - run: echo "${{steps.version.outputs.version}}" >> $GITHUB_OUTPUT
+      - run: echo "${{steps.version.outputs.semantic}}" >> $GITHUB_OUTPUT
      
   #registerartifact:
   #    needs: approved
